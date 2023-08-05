@@ -83,9 +83,7 @@ int main(){
             }
         }
     }
-        for(int i = 0; i < coordenadas.size(); i++){
-            cout << "X = " << coordenadas[i][0] << " " << "Y = " << coordenadas[i][1] << endl;
-        }
+ 
         for(int i = 0; i < coordenadas.size(); i++){
             if(checkCoordinates(coordenadas, coordenadas[i][0]+1, coordenadas[i][1]) && checkCoordinates(coordenadas, coordenadas[i][0], coordenadas[i][1]+1) && checkCoordinates(coordenadas, coordenadas[i][0]+1, coordenadas[i][1]+1)){
                 area++;
