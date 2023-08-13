@@ -5,7 +5,6 @@ using namespace std;
 
 //Resolvida
 
-//Autor solução Gabriel
 int main(){
     int valueToSum = 2;
     int count = 0;
