@@ -1,55 +1,97 @@
-#include<iostream>
-#include<string>
-#include<vector>
-
+#include <bits/stdc++.h>
 using namespace std;
 
 //Em processo
 
-int main() {
-    int palavras;
-    int indiceAsteristico;
-    int comprimentoPalavras;
-    int nextPalavra = 1;
-    vector<int> asteristicos(palavras);
-    cin >> palavras >> comprimentoPalavras;
-    vector<string> listPalavras(palavras); // Usando um vector em vez de um array fixo
-    vector<string> compativeis; 
-    
-    for (int i = 0; i < palavras; i++) {
-        cin >> listPalavras[i];
-        cout << "Palavra atual: " << listPalavras[i] << endl;
+int main(){
+    int amountWords;
+    int wordsLength;
+    cin >> amountWords >> wordsLength;
+    vector<int> resultWords(amountWords);
+    vector<vector<string>> compatibleWords(amountWords);
+    vector<string> words(amountWords);
+    for(int i = 0; i < words.size(); i++){
+        cin >> words[i];
+        if(words[i].length() != wordsLength) i--;
     }
-    
-    for (int i = 0; i < listPalavras.size(); i++) { // Percorre todas as palavras no vetor
-        for (int j = 0; j < listPalavras[i].size(); j++) { // Percorre cada letra da palavra atual
-            if(i < listPalavras.size()-1){
-                if(listPalavras[i][j] == '*'){
-                    indiceAsteristico = j;
-                    cout << "É um asteristico" << endl;
-                }else if(listPalavras[i+1][j] == '*'){
-                    indiceAsteristico = j;
-                    cout << "É um asteristico" << endl;
-                }
-                else{
-                    if(listPalavras[i][j] == listPalavras[i+nextPalavra][j] && j != listPalavras[i].length()-1){
-                        continue;
+    for(int i = 0; i < words.size(); i++){
+        int compatible = 0;
+        for(int j = 0; j < words.size(); j++){
+            if(i != j){
+                int checkingEquality = 0;
+                for(int x = 0; x < wordsLength; x++){
+                    if(words[i][x] == words[j][x] && words[i][x] != '*' && words[j][x] != '*'){
+                        checkingEquality++;
                     }
-                    else if(listPalavras[i][j] == listPalavras[i+nextPalavra][j] && j == listPalavras[i].length()-1){
-                        for(int x = 0; x < 2; x++){
-                            compativeis.push_back(listPalavras[i+x]);
-                        }
-                    }
-                    nextPalavra++;
-                    break;
                 }
-                asteristicos.push_back(indiceAsteristico);
+                if(checkingEquality == wordsLength-2){
+                    // if(i == 0){
+                    //     cout << endl << "Checando: "<< words[j] << endl;
+                    // }
+                    compatibleWords[i].push_back(words[j]);
+                    compatible++;
+                }
+            }
+        }
+        resultWords[i] = compatible;
+    }
+    vector<vector<int>> finalResult = {{resultWords[0],0}};
+    for(int i = 1; i < resultWords.size(); i++){
+        if(finalResult[0][0] < resultWords[i]){
+            finalResult[0][0] = resultWords[i];
+            finalResult[0][1] = i;
+        }
+        else if(finalResult[0][0] == resultWords[i]){
+            finalResult.push_back({resultWords[i],i});
+        }
+    }
+
+    // for(int i = 0; i < finalResult.size(); i++){
+    //     cout << endl << finalResult[i][0] << " " << finalResult[i][1] << endl;
+    // }
+
+    string priorityWord;
+    int indice;
+    for(int i = 0; i < finalResult.size(); i++){
+        if(i < finalResult.size()-1){
+            if(words[finalResult[i][1]] > words[finalResult[i+1][1]]){
+                priorityWord = words[finalResult[i+1][1]];
+                indice = finalResult[i+1][1];
+            }
+            else{
+                priorityWord = words[finalResult[i][1]];
+                indice = finalResult[i][1];
             }
         }
     }
-    for(int i = 0; i < compativeis.size(); i++){
-        cout << compativeis[i] << endl;
+
+    // for(int i = 0; i < compatibleWords[indice].size(); i++){
+    //     cout << endl << "Palavra compatível: "<< compatibleWords[indice][i] << endl;
+    // }
+
+    // cout << endl << priorityWord << endl;
+
+    char missingChar;
+    int indiceChar;
+
+    for(int i = 0; i < priorityWord.length(); i++){
+        if(priorityWord[i] == '*'){
+            indiceChar = i;
+            break;
+        }
     }
+    for(int i = 0; i < compatibleWords[indice].size(); i++){
+        if(compatibleWords[indice][i][indiceChar] != '*'){
+            priorityWord[indiceChar] = compatibleWords[indice][i][indiceChar];
+            break;
+        }
+    }
+    // cout << endl << "Palavra completa: " << priorityWord << endl;
+    // for(int i = 0; i < resultWords.size(); i++){
+    //     cout << endl << words[i] << " " << resultWords[i] << endl;
+    // }
+
+     cout << priorityWord << " " << compatibleWords[indice].size();
+
     return 0;
 }
-
